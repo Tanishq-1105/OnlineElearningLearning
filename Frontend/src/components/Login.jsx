@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
+
 function Login() {
   const {
     register,
@@ -14,13 +15,14 @@ function Login() {
     const userInfo = {
       email: data.email,
       password: data.password,
+      role: data.role,
     };
     await axios
-      .post("http://localhost:4001/user/login", userInfo)
+      .post("http://localhost:4007/user/login", userInfo)
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          toast.success("Loggedin Successfully");
+          toast.success("Logged in Successfully");
           document.getElementById("my_modal_3").close();
           setTimeout(() => {
             window.location.reload();
@@ -36,12 +38,12 @@ function Login() {
         }
       });
   };
+
   return (
     <div>
       <dialog id="my_modal_3" className="modal">
         <div className="modal-box">
           <form onSubmit={handleSubmit(onSubmit)} method="dialog">
-            {/* if there is a button in form, it will close the modal */}
             <Link
               to="/"
               className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -51,6 +53,37 @@ function Login() {
             </Link>
 
             <h3 className="font-bold text-lg">Login</h3>
+
+            {/* Role */}
+            <div className="mt-4 space-y-2">
+              <span>Role</span>
+              <br />
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  value="user"
+                  className="form-radio"
+                  {...register("role", { required: true })}
+                />
+                <span className="ml-2">User</span>
+              </label>
+              <label className="inline-flex items-center ml-4">
+                <input
+                  type="radio"
+                  value="admin"
+                  className="form-radio"
+                  {...register("role", { required: true })}
+                />
+                <span className="ml-2">Admin</span>
+              </label>
+              <br />
+              {errors.role && (
+                <span className="text-sm text-red-500">
+                  This field is required
+                </span>
+              )}
+            </div>
+
             {/* Email */}
             <div className="mt-4 space-y-2">
               <span>Email</span>
@@ -68,7 +101,8 @@ function Login() {
                 </span>
               )}
             </div>
-            {/* password */}
+
+            {/* Password */}
             <div className="mt-4 space-y-2">
               <span>Password</span>
               <br />
@@ -93,10 +127,7 @@ function Login() {
               </button>
               <p>
                 Not registered?{" "}
-                <Link
-                  to="/signup"
-                  className="underline text-blue-500 cursor-pointer"
-                >
+                <Link to="/signup" className="underline text-blue-500 cursor-pointer">
                   Signup
                 </Link>{" "}
               </p>
